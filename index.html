@@ -8,18 +8,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --navy: #0b2340; --gold: #d4a017; }
-        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
+        #main-content { display: none; } /* Tersembunyi total secara default */
         .card:hover { transform: translateY(-5px); transition: all 0.3s ease; }
     </style>
 </head>
 <body>
 
-<div id="login-overlay" class="fixed inset-0 bg-navy z-50 flex items-center justify-center p-4">
+<div id="login-overlay" class="fixed inset-0 bg-navy z-[9999] flex items-center justify-center p-4">
     <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full">
         <div class="text-center mb-6">
-            <i class="fas fa-shield-alt text-4xl text-gold mb-4"></i>
+            <i class="fas fa-lock text-4xl text-gold mb-4"></i>
             <h2 class="text-2xl font-bold text-gray-800">Akses Terbatas</h2>
-            <p class="text-sm text-gray-500 italic">Masukkan password untuk masuk ke menu</p>
+            <p class="text-sm text-gray-500 italic">Masukkan password untuk verifikasi</p>
         </div>
         <input type="password" id="password" class="w-full p-3 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-900" placeholder="Password">
         <button onclick="checkAccess()" class="w-full bg-navy text-white p-3 rounded-lg font-semibold hover:bg-slate-800 transition">MASUK</button>
@@ -27,7 +28,7 @@
     </div>
 </div>
 
-<div id="main-content" class="hidden">
+<div id="main-content">
     <header class="bg-navy text-white py-6 shadow-lg border-b-4 border-gold text-center">
         <div class="container mx-auto px-4">
             <h1 class="text-xl md:text-2xl font-bold tracking-wider uppercase">TRYOUT PERSIAPAN TES PSIKOLOGI 1 POLRI</h1>
@@ -82,53 +83,52 @@
 </div>
 
 <script>
-    const VALID_PW = "4ry412345";
-    const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+    const P = "4ry412345";
+    const LIMIT = 7 * 24 * 60 * 60 * 1000;
 
-    // Fungsi Utama Login
+    // FUNGSI CEK PASSWORD
     function checkAccess() {
-        const passInput = document.getElementById('password').value;
+        const input = document.getElementById('password').value;
+        const msg = document.getElementById('error-msg');
         const now = new Date().getTime();
-        const errorEl = document.getElementById('error-msg');
 
-        if (passInput === VALID_PW) {
-            let firstLogin = localStorage.getItem('access_start');
+        if (input === P) {
+            let start = localStorage.getItem('_ts');
             
-            if (!firstLogin) {
-                // Login sukses pertama kali
-                localStorage.setItem('access_start', now);
-                sessionStorage.setItem('is_logged_in', 'true');
-                showMain();
+            if (!start) {
+                // Perangkat pertama kali login
+                localStorage.setItem('_ts', now);
+                show();
             } else {
-                // Cek kadaluwarsa 7 hari
-                if (now - firstLogin > SEVEN_DAYS) {
-                    errorEl.innerText = "Masa aktif 7 hari Anda telah berakhir.";
-                    errorEl.classList.remove('hidden');
+                // Cek masa aktif
+                if (now - start > LIMIT) {
+                    msg.innerText = "Akses kedaluwarsa (7 Hari Habis).";
+                    msg.classList.remove('hidden');
                 } else {
-                    // Masih aktif, izinkan masuk ke sesi ini
-                    sessionStorage.setItem('is_logged_in', 'true');
-                    showMain();
+                    show();
                 }
             }
         } else {
-            errorEl.innerText = "Password salah!";
-            errorEl.classList.remove('hidden');
+            msg.innerText = "Password Salah!";
+            msg.classList.remove('hidden');
         }
     }
 
-    function showMain() {
-        document.getElementById('login-overlay').style.display = 'none';
-        document.getElementById('main-content').classList.remove('hidden');
+    function show() {
+        document.getElementById('login-overlay').setAttribute('style', 'display:none !important');
+        document.getElementById('main-content').style.display = 'block';
     }
 
-    // RESET SETIAP REFRESH:
-    // Saat halaman dimuat ulang, pastikan menu utama tersembunyi
-    // User HARUS mengetik ulang password meskipun masa aktifnya masih ada.
-    window.onload = () => {
-        sessionStorage.removeItem('is_logged_in'); // Paksa reset sesi setiap refresh
-        document.getElementById('main-content').classList.add('hidden');
+    // PAKSA REFRESH = LOCK
+    // Kode di bawah ini memastikan status login tidak pernah tersimpan di browser
+    window.addEventListener('load', () => {
+        // Sembunyikan konten utama
+        document.getElementById('main-content').style.display = 'none';
+        // Tampilkan overlay login
         document.getElementById('login-overlay').style.display = 'flex';
-    };
+        // Kosongkan input password
+        document.getElementById('password').value = "";
+    });
 </script>
 </body>
 </html>
