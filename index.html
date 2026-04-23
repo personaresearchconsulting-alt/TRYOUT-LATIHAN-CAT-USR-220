@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --navy: #0b2340; --gold: #d4a017; }
-        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; }
+        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .card:hover { transform: translateY(-5px); transition: all 0.3s ease; }
     </style>
 </head>
@@ -17,13 +17,13 @@
 <div id="login-overlay" class="fixed inset-0 bg-navy z-50 flex items-center justify-center p-4">
     <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full">
         <div class="text-center mb-6">
-            <i class="fas fa-user-lock text-4xl text-gold mb-4"></i>
+            <i class="fas fa-shield-alt text-4xl text-gold mb-4"></i>
             <h2 class="text-2xl font-bold text-gray-800">Akses Terbatas</h2>
-            <p class="text-sm text-gray-500 italic">Tryout Persiapan Polri 1</p>
+            <p class="text-sm text-gray-500 italic">Masukkan password untuk masuk ke menu</p>
         </div>
-        <input type="password" id="password" class="w-full p-3 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-900" placeholder="Masukkan Password">
+        <input type="password" id="password" class="w-full p-3 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-900" placeholder="Password">
         <button onclick="checkAccess()" class="w-full bg-navy text-white p-3 rounded-lg font-semibold hover:bg-slate-800 transition">MASUK</button>
-        <p id="error-msg" class="text-red-500 text-sm mt-3 text-center hidden">Password salah atau akses telah berakhir!</p>
+        <p id="error-msg" class="text-red-500 text-sm mt-3 text-center hidden"></p>
     </div>
 </div>
 
@@ -85,6 +85,7 @@
     const VALID_PW = "4ry412345";
     const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
 
+    // Fungsi Utama Login
     function checkAccess() {
         const passInput = document.getElementById('password').value;
         const now = new Date().getTime();
@@ -94,15 +95,18 @@
             let firstLogin = localStorage.getItem('access_start');
             
             if (!firstLogin) {
-                // Perangkat pertama kali login berhasil
+                // Login sukses pertama kali
                 localStorage.setItem('access_start', now);
+                sessionStorage.setItem('is_logged_in', 'true');
                 showMain();
             } else {
-                // Cek apakah sudah expired
+                // Cek kadaluwarsa 7 hari
                 if (now - firstLogin > SEVEN_DAYS) {
-                    errorEl.innerText = "Masa aktif 7 hari telah habis!";
+                    errorEl.innerText = "Masa aktif 7 hari Anda telah berakhir.";
                     errorEl.classList.remove('hidden');
                 } else {
+                    // Masih aktif, izinkan masuk ke sesi ini
+                    sessionStorage.setItem('is_logged_in', 'true');
                     showMain();
                 }
             }
@@ -113,12 +117,18 @@
     }
 
     function showMain() {
-        document.getElementById('login-overlay').classList.add('hidden');
+        document.getElementById('login-overlay').style.display = 'none';
         document.getElementById('main-content').classList.remove('hidden');
-        window.scrollTo(0,0);
     }
 
-    // Penting: Hilangkan fungsi auto-login window.onload agar SELALU minta password
+    // RESET SETIAP REFRESH:
+    // Saat halaman dimuat ulang, pastikan menu utama tersembunyi
+    // User HARUS mengetik ulang password meskipun masa aktifnya masih ada.
+    window.onload = () => {
+        sessionStorage.removeItem('is_logged_in'); // Paksa reset sesi setiap refresh
+        document.getElementById('main-content').classList.add('hidden');
+        document.getElementById('login-overlay').style.display = 'flex';
+    };
 </script>
 </body>
 </html>
