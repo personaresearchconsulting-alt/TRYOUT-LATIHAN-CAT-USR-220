@@ -7,14 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --navy: #0b2340;
-            --gold: #d4a017;
-        }
+        :root { --navy: #0b2340; --gold: #d4a017; }
         body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; }
-        .bg-navy { background-color: var(--navy); }
-        .text-gold { color: var(--gold); }
-        .border-gold { border-color: var(--gold); }
         .card:hover { transform: translateY(-5px); transition: all 0.3s ease; }
     </style>
 </head>
@@ -25,85 +19,60 @@
         <div class="text-center mb-6">
             <i class="fas fa-user-lock text-4xl text-gold mb-4"></i>
             <h2 class="text-2xl font-bold text-gray-800">Akses Terbatas</h2>
-            <p class="text-sm text-gray-500">Silakan masukkan password akses</p>
+            <p class="text-sm text-gray-500 italic">Tryout Persiapan Polri 1</p>
         </div>
-        <input type="password" id="password" class="w-full p-3 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-900" placeholder="Password">
+        <input type="password" id="password" class="w-full p-3 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-900" placeholder="Masukkan Password">
         <button onclick="checkAccess()" class="w-full bg-navy text-white p-3 rounded-lg font-semibold hover:bg-slate-800 transition">MASUK</button>
-        <p id="error-msg" class="text-red-500 text-sm mt-3 text-center hidden">Password salah atau akses ditolak!</p>
+        <p id="error-msg" class="text-red-500 text-sm mt-3 text-center hidden">Password salah atau akses telah berakhir!</p>
     </div>
 </div>
 
 <div id="main-content" class="hidden">
     <header class="bg-navy text-white py-6 shadow-lg border-b-4 border-gold text-center">
         <div class="container mx-auto px-4">
-            <h1 class="text-2xl md:text-3xl font-bold tracking-wider">TRYOUT PERSIAPAN TES PSIKOLOGI 1 POLRI</h1>
-            <p class="text-gold mt-2 font-medium italic">Professional Assessment Center</p>
+            <h1 class="text-xl md:text-2xl font-bold tracking-wider uppercase">TRYOUT PERSIAPAN TES PSIKOLOGI 1 POLRI</h1>
+            <p class="text-gold mt-2 font-medium">Persona Research & Consulting</p>
         </div>
     </header>
 
     <main class="container mx-auto px-4 py-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
             <a href="kecedasan_4.html" class="card bg-white p-6 rounded-xl shadow-md border-l-4 border-gold block">
                 <div class="flex items-center space-x-4">
                     <div class="bg-blue-100 p-3 rounded-lg"><i class="fas fa-brain text-navy text-2xl"></i></div>
-                    <div>
-                        <h3 class="font-bold text-gray-800">Tes Kecerdasan Paket A</h3>
-                        <p class="text-xs text-gray-500">Penalaran Verbal & Logika</p>
-                    </div>
+                    <div><h3 class="font-bold text-gray-800">Tes Kecerdasan A</h3><p class="text-xs text-gray-500">Penalaran & Logika</p></div>
                 </div>
             </a>
-
             <a href="kecerdasan3.html" class="card bg-white p-6 rounded-xl shadow-md border-l-4 border-gold block">
                 <div class="flex items-center space-x-4">
                     <div class="bg-blue-100 p-3 rounded-lg"><i class="fas fa-lightbulb text-navy text-2xl"></i></div>
-                    <div>
-                        <h3 class="font-bold text-gray-800">Tes Kecerdasan Paket B</h3>
-                        <p class="text-xs text-gray-500">Kemampuan Diferensial</p>
-                    </div>
+                    <div><h3 class="font-bold text-gray-800">Tes Kecerdasan B</h3><p class="text-xs text-gray-500">Diferensial</p></div>
                 </div>
             </a>
-
             <a href="huruf_adv_4.html" class="card bg-white p-6 rounded-xl shadow-md border-l-4 border-gold block">
                 <div class="flex items-center space-x-4">
                     <div class="bg-yellow-100 p-3 rounded-lg"><i class="fas fa-eye text-navy text-2xl"></i></div>
-                    <div>
-                        <h3 class="font-bold text-gray-800">Tes Kecermatan</h3>
-                        <p class="text-xs text-gray-500">Huruf Hilang & Simbol</p>
-                    </div>
+                    <div><h3 class="font-bold text-gray-800">Tes Kecermatan</h3><p class="text-xs text-gray-500">Huruf Hilang</p></div>
                 </div>
             </a>
-
             <a href="passhand_a1.html" class="card bg-white p-6 rounded-xl shadow-md border-l-4 border-gold block">
                 <div class="flex items-center space-x-4">
                     <div class="bg-green-100 p-3 rounded-lg"><i class="fas fa-user-shield text-navy text-2xl"></i></div>
-                    <div>
-                        <h3 class="font-bold text-gray-800">Tes Kepribadian (PASS HAND)</h3>
-                        <p class="text-xs text-gray-500">Stabilitas Emosi & Adaptasi</p>
-                    </div>
+                    <div><h3 class="font-bold text-gray-800">Kepribadian (Passhand)</h3><p class="text-xs text-gray-500">Stabilitas Emosi</p></div>
                 </div>
             </a>
-
             <a href="teskepribadian_sssts1.html" class="card bg-white p-6 rounded-xl shadow-md border-l-4 border-gold block">
                 <div class="flex items-center space-x-4">
                     <div class="bg-purple-100 p-3 rounded-lg"><i class="fas fa-list-check text-navy text-2xl"></i></div>
-                    <div>
-                        <h3 class="font-bold text-gray-800">Analisis Kepribadian SSSTS</h3>
-                        <p class="text-xs text-gray-500">Advanced Likert Assessment</p>
-                    </div>
+                    <div><h3 class="font-bold text-gray-800">Analisis SSSTS</h3><p class="text-xs text-gray-500">Likert Assessment</p></div>
                 </div>
             </a>
-
             <a href="tkp4.html" class="card bg-white p-6 rounded-xl shadow-md border-l-4 border-gold block">
                 <div class="flex items-center space-x-4">
                     <div class="bg-red-100 p-3 rounded-lg"><i class="fas fa-users-gear text-navy text-2xl"></i></div>
-                    <div>
-                        <h3 class="font-bold text-gray-800">Tes Karakteristik Pribadi (TKP)</h3>
-                        <p class="text-xs text-gray-500">Integritas & Etika Kerja</p>
-                    </div>
+                    <div><h3 class="font-bold text-gray-800">Tes Karakteristik Pribadi</h3><p class="text-xs text-gray-500">Integritas</p></div>
                 </div>
             </a>
-
         </div>
     </main>
 
@@ -113,53 +82,43 @@
 </div>
 
 <script>
-    // Konfigurasi Password Baru
     const VALID_PW = "4ry412345";
-    
+    const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+
     function checkAccess() {
         const passInput = document.getElementById('password').value;
         const now = new Date().getTime();
-        
+        const errorEl = document.getElementById('error-msg');
+
         if (passInput === VALID_PW) {
             let firstLogin = localStorage.getItem('access_start');
             
             if (!firstLogin) {
-                // Set waktu mulai saat pertama kali login berhasil
+                // Perangkat pertama kali login berhasil
                 localStorage.setItem('access_start', now);
                 showMain();
             } else {
-                // Cek masa aktif 7 hari (604.800.000 ms)
-                const expiry = 7 * 24 * 60 * 60 * 1000;
-                if (now - firstLogin > expiry) {
-                    alert("Akses kedaluwarsa. Masa aktif 7 hari telah habis.");
-                    localStorage.removeItem('access_start');
-                    location.reload();
+                // Cek apakah sudah expired
+                if (now - firstLogin > SEVEN_DAYS) {
+                    errorEl.innerText = "Masa aktif 7 hari telah habis!";
+                    errorEl.classList.remove('hidden');
                 } else {
                     showMain();
                 }
             }
         } else {
-            document.getElementById('error-msg').classList.remove('hidden');
+            errorEl.innerText = "Password salah!";
+            errorEl.classList.remove('hidden');
         }
     }
 
     function showMain() {
-        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('login-overlay').classList.add('hidden');
         document.getElementById('main-content').classList.remove('hidden');
+        window.scrollTo(0,0);
     }
 
-    // Auto-load jika session masih valid
-    window.onload = () => {
-        const start = localStorage.getItem('access_start');
-        if (start) {
-            const expiry = 7 * 24 * 60 * 60 * 1000;
-            if (new Date().getTime() - start < expiry) {
-                showMain();
-            } else {
-                localStorage.removeItem('access_start');
-            }
-        }
-    };
+    // Penting: Hilangkan fungsi auto-login window.onload agar SELALU minta password
 </script>
 </body>
 </html>
