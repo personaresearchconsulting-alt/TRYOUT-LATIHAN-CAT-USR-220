@@ -8,9 +8,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --navy: #0b2340; --gold: #d4a017; }
-        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
-        #main-content { display: none; } /* Tersembunyi total secara default */
+        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; margin: 0; }
+        
+        /* Penting: Konten utama disembunyikan total dengan CSS berat */
+        #main-content { display: none !important; }
+        
         .card:hover { transform: translateY(-5px); transition: all 0.3s ease; }
+        .bg-navy { background-color: var(--navy); }
+        .text-gold { color: var(--gold); }
     </style>
 </head>
 <body>
@@ -20,115 +25,109 @@
         <div class="text-center mb-6">
             <i class="fas fa-lock text-4xl text-gold mb-4"></i>
             <h2 class="text-2xl font-bold text-gray-800">Akses Terbatas</h2>
-            <p class="text-sm text-gray-500 italic">Masukkan password untuk verifikasi</p>
+            <p class="text-sm text-gray-500 italic">Silakan masukkan password akses</p>
         </div>
-        <input type="password" id="password" class="w-full p-3 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-900" placeholder="Password">
-        <button onclick="checkAccess()" class="w-full bg-navy text-white p-3 rounded-lg font-semibold hover:bg-slate-800 transition">MASUK</button>
-        <p id="error-msg" class="text-red-500 text-sm mt-3 text-center hidden"></p>
+        <input type="password" id="password" class="w-full p-3 border-2 rounded-lg mb-4 focus:border-blue-900 outline-none" placeholder="Password">
+        <button onclick="verifikasi()" class="w-full bg-navy text-white p-3 rounded-lg font-bold hover:bg-slate-800">MASUK</button>
+        <p id="pesan-error" class="text-red-500 text-sm mt-3 text-center hidden"></p>
     </div>
 </div>
 
 <div id="main-content">
-    <header class="bg-navy text-white py-6 shadow-lg border-b-4 border-gold text-center">
-        <div class="container mx-auto px-4">
-            <h1 class="text-xl md:text-2xl font-bold tracking-wider uppercase">TRYOUT PERSIAPAN TES PSIKOLOGI 1 POLRI</h1>
-            <p class="text-gold mt-2 font-medium">Persona Research & Consulting</p>
-        </div>
+    <header class="bg-navy text-white py-6 border-b-4 border-gold text-center">
+        <h1 class="text-xl md:text-2xl font-bold uppercase">TRYOUT PERSIAPAN TES PSIKOLOGI 1 POLRI</h1>
+        <p class="text-gold font-medium">Persona Research & Consulting</p>
     </header>
 
     <main class="container mx-auto px-4 py-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <a href="kecedasan_4.html" class="card bg-white p-6 rounded-xl shadow-md border-l-4 border-gold block">
                 <div class="flex items-center space-x-4">
-                    <div class="bg-blue-100 p-3 rounded-lg"><i class="fas fa-brain text-navy text-2xl"></i></div>
-                    <div><h3 class="font-bold text-gray-800">Tes Kecerdasan A</h3><p class="text-xs text-gray-500">Penalaran & Logika</p></div>
+                    <div class="bg-blue-50 p-3 rounded-lg"><i class="fas fa-brain text-navy text-2xl"></i></div>
+                    <div><h3 class="font-bold text-gray-800">Tes Kecerdasan A</h3></div>
                 </div>
             </a>
             <a href="kecerdasan3.html" class="card bg-white p-6 rounded-xl shadow-md border-l-4 border-gold block">
                 <div class="flex items-center space-x-4">
-                    <div class="bg-blue-100 p-3 rounded-lg"><i class="fas fa-lightbulb text-navy text-2xl"></i></div>
-                    <div><h3 class="font-bold text-gray-800">Tes Kecerdasan B</h3><p class="text-xs text-gray-500">Diferensial</p></div>
+                    <div class="bg-blue-50 p-3 rounded-lg"><i class="fas fa-lightbulb text-navy text-2xl"></i></div>
+                    <div><h3 class="font-bold text-gray-800">Tes Kecerdasan B</h3></div>
                 </div>
             </a>
             <a href="huruf_adv_4.html" class="card bg-white p-6 rounded-xl shadow-md border-l-4 border-gold block">
                 <div class="flex items-center space-x-4">
-                    <div class="bg-yellow-100 p-3 rounded-lg"><i class="fas fa-eye text-navy text-2xl"></i></div>
-                    <div><h3 class="font-bold text-gray-800">Tes Kecermatan</h3><p class="text-xs text-gray-500">Huruf Hilang</p></div>
+                    <div class="bg-yellow-50 p-3 rounded-lg"><i class="fas fa-eye text-navy text-2xl"></i></div>
+                    <div><h3 class="font-bold text-gray-800">Tes Kecermatan</h3></div>
                 </div>
             </a>
             <a href="passhand_a1.html" class="card bg-white p-6 rounded-xl shadow-md border-l-4 border-gold block">
                 <div class="flex items-center space-x-4">
-                    <div class="bg-green-100 p-3 rounded-lg"><i class="fas fa-user-shield text-navy text-2xl"></i></div>
-                    <div><h3 class="font-bold text-gray-800">Kepribadian (Passhand)</h3><p class="text-xs text-gray-500">Stabilitas Emosi</p></div>
+                    <div class="bg-green-50 p-3 rounded-lg"><i class="fas fa-user-shield text-navy text-2xl"></i></div>
+                    <div><h3 class="font-bold text-gray-800">Kepribadian (Passhand)</h3></div>
                 </div>
             </a>
             <a href="teskepribadian_sssts1.html" class="card bg-white p-6 rounded-xl shadow-md border-l-4 border-gold block">
                 <div class="flex items-center space-x-4">
-                    <div class="bg-purple-100 p-3 rounded-lg"><i class="fas fa-list-check text-navy text-2xl"></i></div>
-                    <div><h3 class="font-bold text-gray-800">Analisis SSSTS</h3><p class="text-xs text-gray-500">Likert Assessment</p></div>
+                    <div class="bg-purple-50 p-3 rounded-lg"><i class="fas fa-list-check text-navy text-2xl"></i></div>
+                    <div><h3 class="font-bold text-gray-800">Analisis SSSTS</h3></div>
                 </div>
             </a>
             <a href="tkp4.html" class="card bg-white p-6 rounded-xl shadow-md border-l-4 border-gold block">
                 <div class="flex items-center space-x-4">
-                    <div class="bg-red-100 p-3 rounded-lg"><i class="fas fa-users-gear text-navy text-2xl"></i></div>
-                    <div><h3 class="font-bold text-gray-800">Tes Karakteristik Pribadi</h3><p class="text-xs text-gray-500">Integritas</p></div>
+                    <div class="bg-red-50 p-3 rounded-lg"><i class="fas fa-users-gear text-navy text-2xl"></i></div>
+                    <div><h3 class="font-bold text-gray-800">Tes Karakteristik Pribadi</h3></div>
                 </div>
             </a>
         </div>
     </main>
-
-    <footer class="text-center py-10 text-gray-400 text-sm">
-        &copy; 2026 Persona Research & Consulting. All Rights Reserved.
-    </footer>
 </div>
 
 <script>
-    const P = "4ry412345";
-    const LIMIT = 7 * 24 * 60 * 60 * 1000;
+    const KUNCI = "4ry412345";
+    const DURASI = 7 * 24 * 60 * 60 * 1000; // 7 Hari
 
-    // FUNGSI CEK PASSWORD
-    function checkAccess() {
+    function verifikasi() {
         const input = document.getElementById('password').value;
-        const msg = document.getElementById('error-msg');
-        const now = new Date().getTime();
+        const err = document.getElementById('pesan-error');
+        const sekarang = new Date().getTime();
 
-        if (input === P) {
-            let start = localStorage.getItem('_ts');
+        if (input === KUNCI) {
+            let mulai = localStorage.getItem('tgl_mulai');
             
-            if (!start) {
-                // Perangkat pertama kali login
-                localStorage.setItem('_ts', now);
-                show();
+            if (!mulai) {
+                // Login pertama kali sukses
+                localStorage.setItem('tgl_mulai', sekarang);
+                bukaMenu();
             } else {
                 // Cek masa aktif
-                if (now - start > LIMIT) {
-                    msg.innerText = "Akses kedaluwarsa (7 Hari Habis).";
-                    msg.classList.remove('hidden');
+                if (sekarang - mulai > DURASI) {
+                    err.innerText = "MAAF, MASA AKTIF 7 HARI SUDAH HABIS!";
+                    err.classList.remove('hidden');
                 } else {
-                    show();
+                    bukaMenu();
                 }
             }
         } else {
-            msg.innerText = "Password Salah!";
-            msg.classList.remove('hidden');
+            err.innerText = "PASSWORD SALAH!";
+            err.classList.remove('hidden');
         }
     }
 
-    function show() {
-        document.getElementById('login-overlay').setAttribute('style', 'display:none !important');
-        document.getElementById('main-content').style.display = 'block';
+    function bukaMenu() {
+        // Sembunyikan login, tampilkan menu
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('main-content').setAttribute('style', 'display:block !important');
     }
 
-    // PAKSA REFRESH = LOCK
-    // Kode di bawah ini memastikan status login tidak pernah tersimpan di browser
-    window.addEventListener('load', () => {
-        // Sembunyikan konten utama
-        document.getElementById('main-content').style.display = 'none';
-        // Tampilkan overlay login
-        document.getElementById('login-overlay').style.display = 'flex';
-        // Kosongkan input password
+    // --- LOGIKA PAKSA LOCK ---
+    // Setiap kali halaman dimuat (refresh/buka baru), hapus semua akses sementara
+    window.onload = function() {
+        // Pastikan input kosong
         document.getElementById('password').value = "";
-    });
+        // Sembunyikan menu utama (Jaga-jaga jika CSS bocor)
+        document.getElementById('main-content').setAttribute('style', 'display:none !important');
+        // Tampilkan layar login
+        document.getElementById('login-overlay').style.display = 'flex';
+    };
 </script>
 </body>
 </html>
