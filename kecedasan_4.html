@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="id" oncontextmenu="return false" onselectstart="return false" onkeydown="if(event.ctrlKey && (event.key==='c' || event.key==='u')) return false">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>CAT KECERDASAN — Persona Research & Consulting</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+        :root { --primary: #1a1a2e; --accent: #c5a059; --bg: #f8f7f2; --text: #1a1a2e; --success: #27ae60; --danger: #e74c3c; --gold: #d4af37; }
+        * { box-sizing: border-box; -webkit-user-select: none; user-select: none; margin: 0; padding: 0; }
+        body { background: var(--bg); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: var(--text); padding: 10px; line-height: 1.5; }
+        .container { max-width: 850px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border-top: 8px solid var(--accent); }
+        .brand { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+        .brand h1 { font-size: 24px; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; }
+        .brand p { font-size: 14px; color: var(--gold); font-weight: bold; letter-spacing: 1px; }
+        .timer { font-size: 28px; font-weight: 800; color: var(--danger); text-align: center; margin-bottom: 20px; font-family: 'Courier New', monospace; background: #fff5f5; padding: 10px; border-radius: 8px; border: 1px solid #ffebeb; }
+        .login-input { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; text-align: center; margin-bottom: 20px; outline: none; transition: 0.3s; }
+        .login-input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(197, 160, 89, 0.2); }
+        .q-num { color: var(--accent); font-weight: bold; font-size: 14px; margin-bottom: 8px; }
+        .q-text { font-size: 19px; font-weight: 600; color: var(--primary); margin-bottom: 25px; min-height: 60px; }
+        .opt { display: flex; align-items: center; padding: 15px; margin: 12px 0; border: 2px solid #f0f0f0; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; background: #fff; }
+        .opt:hover { background: #fdfaf0; border-color: var(--accent); transform: translateX(5px); }
+        .opt.selected { background: var(--primary); color: #fff; border-color: var(--primary); font-weight: bold; }
+        .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px; margin: 25px 0; max-height: 180px; overflow-y: auto; padding: 15px; background: #fafafa; border-radius: 10px; border: 1px solid #eee; }
+        .nav-item { height: 40px; display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; transition: 0.2s; }
+        .nav-item.active { border: 3px solid var(--primary); transform: scale(1.1); }
+        .nav-item.filled { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .btn { padding: 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 15px; width: 100%; text-transform: uppercase; }
+        .btn-navy { background: var(--primary); color: #fff; box-shadow: 0 4px 10px rgba(26, 26, 46, 0.3); }
+        .btn-green { background: var(--success); color: #fff; margin-top: 15px; }
+        .btn-navy:hover, .btn-green:hover { filter: brightness(1.2); }
+        .rekap-table { width: 100%; border-collapse: collapse; margin-top: 25px; border-radius: 10px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+        .rekap-table th { background: var(--primary); color: #fff; padding: 15px; text-align: left; }
+        .rekap-table td { border: 1px solid #eee; padding: 15px; vertical-align: top; background: #fff; font-size: 14px; }
+        .exp-box { margin-top: 12px; padding: 12px; background: #f0f7ff; border-left: 5px solid #3498db; font-size: 13px; color: #2c3e50; line-height: 1.4; border-radius: 0 5px 5px 0; }
+        #result-screen { text-align: center; }
+        .final-score { font-size: 72px; font-weight: 900; color: var(--primary); margin: 10px 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="login-screen">
+        <div class="brand">
+            <h1>CAT KECERDASAN</h1>
+            <p>Persona Research & Consulting</p>
+        </div>
+        <input type="text" id="username" class="login-input" placeholder="Nama Lengkap Calon Siswa">
+        <button class="btn btn-navy" onclick="startTest()">MULAI SIMULASI CAT</button>
+    </div>
+
+    <div id="test-screen" style="display:none;">
+        <div class="timer" id="timer">60:00</div>
+        <div class="q-area">
+            <div id="q-num" class="q-num"></div>
+            <div id="q-text" class="q-text"></div>
+            <div id="options-container"></div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button class="btn" style="background:#888; color:white;" onclick="changeQ(-1)">KEMBALI</button>
+            <button class="btn btn-navy" onclick="changeQ(1)">LEWATI / LANJUT</button>
+        </div>
+        <div class="nav-grid" id="nav-grid"></div>
+        <button class="btn btn-green" style="background:var(--danger);" onclick="confirmFinish()">SELESAI & KIRIM HASIL</button>
+    </div>
+
+    <div id="result-screen" style="display:none;">
+        <div class="brand">
+            <h1>HASIL EVALUASI</h1>
+            <p id="res-name-display"></p>
+        </div>
+        <div class="final-score" id="score-val">0</div>
+        <p style="color:#666; margin-bottom:20px;">Data Anda telah tersimpan di sistem pusat.</p>
+        <button class="btn btn-green" onclick="downloadPDF()">DOWNLOAD LAPORAN HASIL (PDF)</button>
+        <div style="overflow-x:auto; margin-top:30px; text-align:left;">
+            <h3 style="margin-bottom:10px; color:var(--primary);">Analisis Jawaban & Pembahasan:</h3>
+            <table class="rekap-table">
+                <thead>
+                    <tr>
+                        <th width="50">No</th>
+                        <th>Pembahasan Detail</th>
+                        <th width="80">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="review-body"></tbody>
+            </table>
+        </div>
+        <button class="btn btn-navy" onclick="location.reload()" style="margin-top:30px;">KEMBALI KE BERANDA</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+  { q: "Jika sebuah bangun datar diputar 90 derajat searah jarum jam kemudian diputar kembali 180 derajat, posisi akhirnya sama dengan...", opts: ["90 derajat berlawanan jarum jam", "270 derajat searah jarum jam", "90 derajat searah jarum jam", "Posisi awal", "180 derajat"], ans: "270 derajat searah jarum jam", exp: "Total rotasi adalah 90 + 180 = 270 derajat searah jarum jam." },
+  { q: "Hasil pencerminan horizontal terhadap huruf 'B' adalah...", opts: ["Huruf 'B' tetap", "Huruf 'B' terbalik (hadap kiri)", "Huruf 'E'", "Huruf 'D'", "Huruf 'P'"], ans: "Huruf 'B' terbalik (hadap kiri)", exp: "Pencerminan horizontal membalik sisi kanan dan kiri objek." },
+  { q: "Sebuah kubus diputar 450 derajat searah jarum jam. Hal ini sama dengan memutar kubus sejauh...", opts: ["45 derajat", "90 derajat", "180 derajat", "270 derajat", "360 derajat"], ans: "90 derajat", exp: "450 derajat - 360 derajat (satu putaran penuh) = 90 derajat." },
+  { q: "Manakah yang merupakan hasil rotasi 180 derajat dari huruf 'S'?", opts: ["Huruf 'Z'", "Huruf 'S' tetap", "Huruf 'S' terbalik samping", "Huruf 'N'", "Huruf 'H'"], ans: "Huruf 'S' tetap", exp: "Huruf S memiliki simetri putar 180 derajat sehingga bentuknya tidak berubah saat diputar setengah lingkaran." },
+  { q: "Jika Anda menghadap ke Utara dan berputar 135 derajat searah jarum jam, Anda sekarang menghadap ke...", opts: ["Timur Laut", "Tenggara", "Barat Daya", "Barat Laut", "Selatan"], ans: "Tenggara", exp: "90 derajat ke Timur + 45 derajat lagi = Tenggara." },
+  { q: "Berapa jumlah simetri lipat yang dimiliki oleh sebuah persegi panjang?", opts: ["1", "2", "3", "4", "Tak terhingga"], ans: "2", exp: "Persegi panjang memiliki dua garis simetri (horizontal dan vertikal)." },
+  { q: "Pencerminan terhadap garis y = x akan mengubah koordinat titik (4, 1) menjadi...", opts: ["(-4, -1)", "(-1, -4)", "(1, 4)", "(4, -1)", "(-4, 1)"], ans: "(1, 4)", exp: "Refleksi terhadap y=x menukar posisi x dan y." },
+  { q: "Dua kali pencerminan berturut-turut pada dua garis yang sejajar akan menghasilkan...", opts: ["Rotasi", "Pergeseran (Translasi)", "Pencerminan tunggal", "Perubahan ukuran", "Objek tetap di tempat"], ans: "Pergeseran (Translasi)", exp: "Dua refleksi pada cermin sejajar mengakibatkan objek berpindah posisi (translasi)." },
+  { q: "Manakah yang bukan merupakan hasil rotasi dari huruf 'L'?", opts: ["Huruf 'L' tidur", "Huruf 'L' terbalik (seperti J)", "Huruf 'L' menghadap atas", "Huruf 'L' miring 45 derajat", "Huruf 'V'"], ans: "Huruf 'V'", exp: "Huruf V memiliki struktur yang berbeda dan tidak bisa didapat hanya dari memutar huruf L." },
+  { q: "Hasil rotasi 90 derajat berlawanan arah jarum jam dari arah Barat adalah...", opts: ["Utara", "Selatan", "Timur", "Barat Laut", "Timur Laut"], ans: "Selatan", exp: "Berlawanan jarum jam dari Barat (kiri) adalah ke arah bawah (Selatan)." },
+  { q: "Huruf 'M' jika diputar 180 derajat akan terlihat seperti huruf...", opts: ["M tetap", "W", "E", "3", "N"], ans: "W", exp: "Secara visual, memutar M sejauh 180 derajat akan membuatnya menyerupai huruf W." },
+  { q: "Berapa banyak simetri putar yang dimiliki oleh segitiga sama sisi?", opts: ["1", "2", "3", "4", "6"], ans: "3", exp: "Segitiga sama sisi dapat diputar 120, 240, and 360 derajat untuk kembali ke posisi semula." },
+  { q: "Jika titik (3, -5) dicerminkan terhadap sumbu X, maka koordinat barunya adalah...", opts: ["(-3, -5)", "(3, 5)", "(-3, 5)", "(5, -3)", "(-5, 3)"], ans: "(3, 5)", exp: "Cermin sumbu X mengubah tanda nilai y menjadi sebaliknya." },
+  { q: "Manakah bangun datar berikut yang tidak memiliki simetri lipat sama sekali?", opts: ["Trapesium sama kaki", "Jajar genjang", "Layang-layang", "Lingkaran", "Persegi"], ans: "Jajar genjang", exp: "Jajar genjang memiliki simetri putar tetapi tidak memiliki garis lipat yang membagi dua bagian sama besar secara simetris." },
+  { q: "Jika Anda berputar 270 derajat searah jarum jam, itu sama dengan berputar...", opts: ["90 derajat searah jarum jam", "90 derajat berlawanan arah jarum jam", "180 derajat", "45 derajat", "360 derajat"], ans: "90 derajat berlawanan arah jarum jam", exp: "360 - 270 = 90 derajat ke arah yang berlawanan." },
+  { q: "Hasil pencerminan vertikal (atas-bawah) terhadap huruf 'E' adalah...", opts: ["Huruf 'E' tetap", "Huruf 'E' hadap kiri", "Huruf '3'", "Huruf 'M'", "Huruf 'W'"], ans: "Huruf 'E' tetap", exp: "Huruf E memiliki simetri horizontal, sehingga jika dicerminkan atas-bawah (secara horizontal), bentuknya tetap." },
+  { q: "Berapa banyak simetri lipat pada huruf 'H'?", opts: ["0", "1", "2", "3", "4"], ans: "2", exp: "Huruf H dapat dilipat secara vertikal dan horizontal." },
+  { q: "Jika sebuah pola persegi diputar 45 derajat, maka sudut-sudutnya akan menunjuk ke arah...", opts: ["Utara, Selatan, Timur, Barat", "Timur Laut, Tenggara, Barat Daya, Barat Laut", "Atas dan Bawah saja", "Kiri dan Kanan saja", "Tetap sama"], ans: "Timur Laut, Tenggara, Barat Daya, Barat Laut", exp: "Rotasi 45 derajat memindahkan sudut yang awalnya lurus menjadi miring (diagonal)." },
+  { q: "Pencerminan titik (2, 4) terhadap titik asal (0,0) menghasilkan...", opts: ["(-2, 4)", "(2, -4)", "(-2, -4)", "(4, 2)", "(-4, -2)"], ans: "(-2, -4)", exp: "Refleksi terhadap titik pusat membalikkan kedua tanda koordinat (x dan y)." },
+  { q: "Sebuah layang-layang memiliki berapa banyak simetri lipat?", opts: ["1", "2", "3", "4", "0"], ans: "1", exp: "Layang-layang hanya memiliki satu sumbu simetri di sepanjang diagonal terpanjangnya." },
+  { q: "Jika objek 'X' dicerminkan terhadap sumbu Y, lalu hasilnya dicerminkan lagi terhadap sumbu Y, maka...", opts: ["Objek terbalik", "Objek tetap seperti semula", "Objek bergeser ke kanan", "Objek hilang", "Objek berotasi 90 derajat"], ans: "Objek tetap seperti semula", exp: "Dua kali pencerminan pada sumbu yang sama akan membatalkan satu sama lain." },
+  { q: "Arah yang terletak di antara Barat dan Utara adalah...", opts: ["Barat Laut", "Timur Laut", "Barat Daya", "Tenggara", "Selatan"], ans: "Barat Laut", exp: "Sesuai standar mata angin, posisi antara Barat dan Utara disebut Barat Laut." },
+  { q: "Manakah huruf yang memiliki simetri putar tetapi tidak memiliki simetri lipat?", opts: ["A", "B", "N", "E", "T"], ans: "N", exp: "Huruf N bisa diputar 180 derajat dan terlihat sama, tapi tidak bisa dilipat agar kedua sisinya menempel sempurna." },
+  { q: "Hasil rotasi 180 derajat dari arah Tenggara adalah...", opts: ["Barat Laut", "Timur Laut", "Barat Daya", "Utara", "Selatan"], ans: "Barat Laut", exp: "180 derajat berarti arah yang berlawanan tepat. Lawan Tenggara adalah Barat Laut." },
+  { q: "Berapa banyak simetri lipat pada bangun lingkaran?", opts: ["1", "2", "4", "8", "Tak terhingga"], ans: "Tak terhingga", exp: "Setiap garis yang melewati titik pusat lingkaran adalah sumbu simetri." },
+  { q: "Berapakah total jumlah rusuk yang dimiliki oleh sebuah balok?", opts: ["8", "10", "12", "14", "16"], ans: "12", exp: "Balok memiliki 12 rusuk yang terdiri dari 4 rusuk panjang, 4 lebar, and 4 tinggi." },
+  { q: "Sebuah kubus memiliki panjang rusuk 5 cm. Berapakah volume kubus tersebut?", opts: ["25 cm³", "50 cm³", "100 cm³", "125 cm³", "150 cm³"], ans: "125 cm³", exp: "Volume kubus = s x s x s = 5 x 5 x 5 = 125 cm³." },
+  { q: "Berapa banyak titik sudut yang terdapat pada sebuah bangun ruang kubus?", opts: ["4", "6", "8", "10", "12"], ans: "8", exp: "Kubus memiliki 8 titik sudut (4 di bagian atas dan 4 di bagian bawah)." },
+  { q: "Jika sebuah balok memiliki panjang 10, lebar 5, and tinggi 4. Berapakah luas permukaan balok tersebut?", opts: ["110", "220", "200", "150", "180"], ans: "220", exp: "LP = 2 x (PL + PT + LT) = 2 x (50 + 40 + 20) = 2 x 110 = 220." },
+  { q: "Diagonal ruang pada balok atau kubus berjumlah...", opts: ["2", "4", "6", "8", "12"], ans: "4", exp: "Diagonal ruang menghubungkan dua titik sudut yang berhadapan melintasi bagian dalam bangun." },
+  { q: "Bangun ruang yang memiliki 6 sisi berbentuk persegi yang sama besar adalah...", opts: ["Balok", "Prisma", "Kubus", "Limas", "Tabung"], ans: "Kubus", exp: "Karakteristik utama kubus adalah semua sisinya berbentuk persegi yang kongruen." },
+  { q: "Jumlah seluruh panjang rusuk sebuah kubus adalah 96 cm. Berapakah panjang satu rusuknya?", opts: ["6 cm", "8 cm", "10 cm", "12 cm", "14 cm"], ans: "8 cm", exp: "Total rusuk ada 12. Maka 96 / 12 = 8 cm." },
+  { q: "Sisi-sisi yang berhadapan pada sebuah balok memiliki sifat...", opts: ["Tegak lurus", "Sejajar dan luasnya sama", "Berpotongan", "Selalu berbentuk persegi", "Berbeda luas"], ans: "Sejajar dan luasnya sama", exp: "Tiga pasang sisi balok yang berhadapan selalu sejajar dan memiliki dimensi yang identik." },
+  { q: "Berapa banyak diagonal sisi yang dimiliki oleh sebuah kubus?", opts: ["4", "6", "8", "12", "16"], ans: "12", exp: "Ada 6 sisi, setiap sisi memiliki 2 diagonal. 6 x 2 = 12." },
+  { q: "Manakah yang merupakan rumus untuk mencari volume balok?", opts: ["s x s x s", "p x l x t", "p + l + t", "2 x (p+l)", "1/2 x a x t"], ans: "p x l x t", exp: "Volume balok adalah hasil kali dari tiga dimensinya: panjang, lebar, and tinggi." },
+  { q: "Jika dua buah kubus dengan rusuk 3 cm disusun berdampingan, bangun baru yang terbentuk adalah...", opts: ["Kubus besar", "Balok", "Prisma segitiga", "Limas", "Bola"], ans: "Balok", exp: "Penyusunan dua kubus mengubah salah satu dimensinya (panjang) menjadi lebih besar, sehingga menjadi balok." },
+  { q: "Berapa banyak bidang diagonal yang dimiliki oleh sebuah kubus?", opts: ["2", "4", "6", "8", "12"], ans: "6", exp: "Terdapat 6 bidang diagonal yang membagi kubus secara diagonal." },
+  { q: "Pertemuan antara dua buah sisi pada bangun ruang disebut...", opts: ["Titik sudut", "Rusuk", "Bidang", "Diagonal", "Sudut"], ans: "Rusuk", exp: "Rusuk adalah garis yang terbentuk dari pertemuan dua bidang sisi." },
+  { q: "Sebuah balok memiliki panjang 15, lebar 10, and tinggi 8. Berapakah volumenya?", opts: ["1000", "1200", "1500", "800", "1100"], ans: "1200", exp: "V = 15 x 10 x 8 = 1200." },
+  { q: "Dua garis pada balok yang tidak sejajar dan tidak berpotongan karena terletak pada bidang yang berbeda disebut...", opts: ["Sejajar", "Berpotongan", "Bersilangan", "Berhimpit", "Tegak lurus"], ans: "Bersilangan", exp: "Garis bersilangan adalah garis-garis yang tidak memiliki titik temu namun tidak searah." },
+  { q: "Sebuah kubus memiliki luas permukaan 150 cm². Berapakah panjang rusuknya?", opts: ["3 cm", "4 cm", "5 cm", "6 cm", "7 cm"], ans: "5 cm", exp: "LP = 6 x s². 150 / 6 = 25. Akar dari 25 adalah 5 cm." },
+  { q: "Berapakah sudut yang terbentuk antara rusuk alas dan rusuk tegak pada balok?", opts: ["30 derajat", "45 derajat", "60 derajat", "90 derajat", "180 derajat"], ans: "90 derajat", exp: "Setiap rusuk yang bertemu pada satu titik sudut balok saling tegak lurus (siku-siku)." },
+  { q: "Jika sebuah balok dipotong secara diagonal melalui dua rusuk yang berhadapan, bidang potongnya berbentuk...", opts: ["Segitiga", "Persegi panjang", "Trapesium", "Lingkaran", "Layang-layang"], ans: "Persegi panjang", exp: "Irisan diagonal pada balok atau kubus akan membentuk bidang datar persegi panjang." },
+  { q: "Berapa banyak pasangan rusuk yang sejajar pada sebuah balok?", opts: ["4", "8", "12", "18", "24"], ans: "18", exp: "Terdapat 12 rusuk, di mana setiap rusuk memiliki 3 rusuk lain yang sejajar dengannya." },
+  { q: "Manakah dari benda berikut yang umumnya berbentuk balok?", opts: ["Dadu", "Bola kasti", "Kotak sepatu", "Tenda", "Topi ulang tahun"], ans: "Kotak sepatu", exp: "Kotak sepatu memiliki dimensi panjang, lebar, and tinggi yang biasanya berbeda, menyerupai balok." },
+  { q: "Sebuah kubus memiliki volume 64 cm³. Berapakah luas salah satu sisinya?", opts: ["4 cm²", "8 cm²", "16 cm²", "32 cm²", "64 cm²"], ans: "16 cm²", exp: "V=64 maka s=4. Luas satu sisi = s x s = 16 cm²." },
+  { q: "Sisi atas sebuah balok disebut juga sebagai...", opts: ["Alas", "Selimut", "Dinding", "Tutup", "Diagonal"], ans: "Tutup", exp: "Dalam konteks bangun ruang, sisi bagian atas sering disebut tutup yang sejajar dengan alas." },
+  { q: "Berapa banyak diagonal ruang yang bisa ditarik dari satu titik sudut saja?", opts: ["1", "2", "3", "4", "0"], ans: "1", exp: "Dari satu titik sudut, hanya bisa ditarik satu garis menuju titik sudut yang berseberangan secara ruang." },
+  { q: "Perbedaan utama antara balok dan kubus terletak pada...", opts: ["Jumlah sisi", "Jumlah rusuk", "Jumlah titik sudut", "Panjang rusuknya", "Bentuk diagonalnya"], ans: "Panjang rusuknya", exp: "Balok memiliki rusuk dengan panjang bervariasi (p, l, t), sedangkan kubus semua rusuknya sama panjang." },
+  { q: "Jika sebuah kubus diletakkan di dalam air, sisi yang menempel pada dasar wadah disebut...", opts: ["Sisi tegak", "Tutup", "Alas", "Sisi samping", "Diagonal"], ans: "Alas", exp: "Alas adalah sisi bagian bawah yang menjadi tumpuan bangun tersebut." },
+  { q: "Pada pola jaring-jaring kubus 1-4-1, jika kotak paling atas adalah sisi DEPAN, maka kotak paling bawah adalah sisi...", opts: ["Belakang", "Atas", "Bawah", "Kiri", "Kanan"], ans: "Belakang", exp: "Dalam jaring-jaring kubus, dua sisi yang dipisahkan oleh satu kotak lain akan menjadi sisi yang saling berhadapan." },
+  { q: "Berapa banyak kotak persegi yang menyusun satu buah jaring-jaring kubus?", opts: ["4", "5", "6", "7", "8"], ans: "6", exp: "Karena kubus memiliki 6 sisi, maka jaring-jaringnya pun harus terdiri dari 6 buah persegi." },
+  { q: "Pada dadu standar, jika angka 1 berada di sisi atas, angka berapakah yang berada di sisi alas (bawah)?", opts: ["2", "3", "4", "5", "6"], ans: "6", exp: "Pasangan sisi berlawanan pada dadu standar selalu berjumlah 7 (1+6=7)." },
+  { q: "Manakah susunan 6 persegi berikut yang TIDAK bisa membentuk kubus?", opts: ["Pola T", "Pola Salib", "Pola 6 kotak berderet lurus", "Pola Tangga", "Pola 1-4-1"], ans: "Pola 6 kotak berderet lurus", exp: "6 kotak yang hanya berderet lurus tidak akan memiliki sisi penutup untuk samping kanan dan kiri." },
+  { q: "Jika sebuah jaring-jaring kubus memiliki angka 1 sampai 6, di mana 2 berhadapan dengan 4, and 1 berhadapan dengan 3, maka 5 berhadapan dengan...", opts: ["1", "2", "3", "4", "6"], ans: "6", exp: "Pasangan sisi kubus adalah (1-3), (2-4), and sisanya adalah (5-6)." },
+  { q: "Dalam pandangan perspektif 3D, jumlah maksimal sisi kubus yang dapat dilihat secara bersamaan oleh mata adalah...", opts: ["1", "2", "3", "4", "5"], ans: "3", exp: "Dari sudut pandang manapun, kita hanya bisa melihat maksimal 3 sisi (misalnya atas, depan, and samping)." },
+  { q: "Jika sebuah kubus transparan diputar 90 derajat ke arah depan, maka sisi yang awalnya berada di ATAS akan pindah ke...", opts: ["Bawah", "Belakang", "Depan", "Kanan", "Kiri"], ans: "Depan", exp: "Rotasi ke depan membawa sisi atas menuju posisi depan." },
+  { q: "Berapa banyak titik sudut yang bertemu pada satu pojok saat jaring-jaring dilipat menjadi kubus?", opts: ["2", "3", "4", "5", "6"], ans: "3", exp: "Setiap satu titik sudut pada kubus merupakan pertemuan dari 3 buah bidang sisi." },
+  { q: "Pada pola jaring-jaring, sisi yang tidak mungkin menjadi tetangga (bersentuhan rusuk) adalah sisi yang...", opts: ["Berhadapan", "Tegak lurus", "Bersebelahan", "Sama besar", "Berhimpit"], ans: "Berhadapan", exp: "Sisi yang saling berhadapan (sejajar) tidak akan pernah memiliki rusuk yang saling bersentuhan." },
+  { q: "Jika sebuah kubus padat 3x3x3 dipotong-potong menjadi kubus kecil berukuran 1x1x1, berapa banyak kubus kecil yang terbentuk?", opts: ["9", "18", "27", "36", "54"], ans: "27", exp: "Volume kubus = 3 x 3 x 3 = 27 bagian kecil." },
+  { q: "Dari 27 potongan kubus kecil (3x3x3), berapa banyak kubus yang memiliki cat hanya di satu sisinya saja jika permukaan luarnya dicat?", opts: ["4", "6", "8", "12", "1"], ans: "6", exp: "Hanya kubus yang berada tepat di tengah-tengah setiap sisi (6 sisi x 1 kubus) yang terkena cat di satu sisi." },
+  { q: "Berapa banyak kubus kecil yang tidak terkena cat sama sekali pada susunan 3x3x3 yang dicat bagian luarnya?", opts: ["0", "1", "2", "3", "8"], ans: "1", exp: "Hanya ada 1 kubus yang berada di pusat terdalam (inti) yang tidak memiliki akses ke permukaan luar." },
+  { q: "Jaring-jaring balok berbeda dengan jaring-jaring kubus karena...", opts: ["Jumlah kotaknya berbeda", "Bentuk kotaknya persegi panjang", "Tidak bisa dilipat", "Punya lebih banyak sudut", "Rusuknya lebih sedikit"], ans: "Bentuk kotaknya persegi panjang", exp: "Balok terdiri dari persegi panjang (atau campuran dengan persegi), sedangkan kubus murni persegi." },
+  { q: "Jika pola jaring-jaring berbentuk huruf 'L' yang terdiri dari 6 kotak dilipat, apakah akan terbentuk kubus?", opts: ["Bisa", "Tidak Bisa", "Mungkin", "Hanya jika kotaknya kecil", "Bisa jika dipotong"], ans: "Bisa", exp: "Pola L dengan susunan tertentu (misal 4 lurus, 2 di samping yang benar) termasuk dalam 11 variasi jaring-jaring kubus." },
+  { q: "Sebuah kubus memiliki sisi Merah, Biru, Hijau, Kuning, Putih, Hitam. Jika Putih berhadapan dengan Hitam, Biru dengan Kuning, maka Merah berhadapan dengan...", opts: ["Putih", "Hitam", "Biru", "Kuning", "Hijau"], ans: "Hijau", exp: "Sisa pasangan warna yang tersedia adalah Merah and Hijau." },
+  { q: "Berapa jumlah diagonal sisi pada satu bidang persegi jaring-jaring kubus?", opts: ["1", "2", "3", "4", "0"], ans: "2", exp: "Setiap satu bidang persegi memiliki dua buah garis diagonal sisi." },
+  { q: "Jika kubus diputar 180 derajat terhadap sumbu horizontal, maka sisi ATAS akan berpindah menjadi sisi...", opts: ["Depan", "Belakang", "Kanan", "Kiri", "Bawah"], ans: "Bawah", exp: "Rotasi 180 derajat (setengah putaran) akan membalik posisi atas menjadi bawah secara total." },
+  { q: "Pada dadu, angka 2 berhadapan dengan angka...", opts: ["1", "3", "4", "5", "6"], ans: "5", exp: "Dadu standar: 1-6, 2-5, 3-4 (semua berjumlah 7)." },
+  { q: "Manakah yang merupakan ciri khas jaring-jaring kubus?", opts: ["Terdiri dari 5 kotak", "Kotak boleh tumpang tindih", "Bisa dilipat jadi bangun tertutup", "Punya 12 kotak", "Semua kotak terpisah"], ans: "Bisa dilipat jadi bangun tertutup", exp: "Jaring-jaring yang valid harus bisa membentuk bangun ruang tanpa ada celah atau sisi yang menumpuk." },
+  { q: "Jika sebuah kubus digulingkan ke KANAN satu kali, sisi yang awalnya ada di KIRI akan pindah ke posisi...", opts: ["Atas", "Bawah", "Depan", "Belakang", "Alas/Bawah"], ans: "Atas", exp: "Sisi kiri akan naik ke atas, sisi atas ke kanan, sisi kanan ke bawah, and sisi bawah ke kiri." },
+  { q: "Berapa banyak variasi jaring-jaring kubus yang secara matematis dianggap berbeda?", opts: ["9", "10", "11", "12", "15"], ans: "11", exp: "Ada 11 bentuk unik yang bisa membentuk kubus sempurna." },
+  { q: "Bayangan sebuah kubus yang disinari lampu tepat dari atas pada lantai akan berbentuk...", opts: ["Segitiga", "Lingkaran", "Persegi", "Trapesium", "Garis lurus"], ans: "Persegi", exp: "Proyeksi dari atas sebuah kubus yang diletakkan tegak adalah sebuah bidang persegi." },
+  { q: "Pada pola jaring-jaring 2-2-2 (berbentuk tangga), sisi paling ujung akan berhadapan dengan sisi...", opts: ["Sebelahnya", "Dua kotak setelahnya", "Tiga kotak setelahnya", "Ujung satunya lagi", "Tidak ada"], ans: "Dua kotak setelahnya", exp: "Aturan umum jaring-jaring: sisi yang melompati satu sisi lain adalah sisi yang berhadapan." },
+  { q: "Apa yang terjadi jika jaring-jaring memiliki 7 buah kotak persegi?", opts: ["Bisa jadi kubus", "Akan ada sisi yang menumpuk", "Jadi balok", "Jadi prisma", "Tidak bisa dilipat"], ans: "Akan ada sisi yang menumpuk", exp: "Kubus hanya membutuhkan 6 sisi; kotak ke-7 akan menimpa sisi yang sudah ada." },
+  { q: "Sisi yang sejajar dengan sisi depan pada sebuah kubus yang sudah jadi adalah...", opts: ["Sisi atas", "Sisi bawah", "Sisi belakang", "Sisi samping kanan", "Sisi samping kiri"], ans: "Sisi belakang", exp: "Depan berhadapan dengan belakang, atas dengan bawah, kiri dengan kanan." },
+  { q: "Dua buah balok berukuran 4x2x2 disusun bertumpuk pada sisi 4x2. Berapakah dimensi bangun ruang yang baru terbentuk?", opts: ["4x4x2", "8x2x2", "4x2x4", "8x4x4", "4x4x4"], ans: "4x2x4", exp: "Jika ditumpuk pada sisi 4x2, maka panjang and lebar tetap, sedangkan tingginya menjadi 2+2=4. Dimensinya menjadi 4x2x4." },
+  { q: "Manakah yang merupakan diagonal ruang pada balok ABCD.EFGH?", opts: ["Garis AB", "Garis AC", "Garis AG", "Garis AE", "Garis BC"], ans: "Garis AG", exp: "Diagonal ruang menghubungkan dua titik sudut yang berlawanan melintasi interior, seperti dari titik A di lantai depan ke titik G di atap belakang." },
+  { q: "Sebuah kubus memiliki volume 8 cm³. Jika panjang rusuknya diperbesar menjadi 2 kali lipat, berapakah volumenya sekarang?", opts: ["16 cm³", "32 cm³", "64 cm³", "128 cm³", "24 cm³"], ans: "64 cm³", exp: "Jika rusuk jadi 2x lipat, volume jadi 2³ = 8x lipat semula. 8 x 8 = 64 cm³." },
+  { q: "Berapa banyak rusuk yang dimiliki oleh sebuah limas segiempat?", opts: ["4", "6", "8", "10", "12"], ans: "8", exp: "Limas segiempat memiliki 4 rusuk alas and 4 rusuk tegak yang menuju puncak. Total 8 rusuk." },
+  { q: "Jika sebuah balok memiliki panjang rusuk yang semuanya berbeda (P, L, T), berapa banyak diagonal sisi yang panjangnya sama?", opts: ["0", "2", "4", "6", "12"], ans: "4", exp: "Setiap pasang sisi yang berhadapan (misal depan-belakang) memiliki diagonal yang sama panjang. Jadi ada 4 diagonal yang sama untuk setiap pasang." },
+  { q: "Manakah bangun ruang yang memiliki jumlah titik sudut paling sedikit?", opts: ["Kubus", "Balok", "Prisma segitiga", "Limas segitiga", "Limas segiempat"], ans: "Limas segitiga", exp: "Limas segitiga (tetrahedron) hanya memiliki 4 titik sudut." },
+  { q: "Sudut yang terbentuk antara dua diagonal sisi yang berpotongan pada satu bidang persegi adalah...", opts: ["30 derajat", "45 derajat", "60 derajat", "90 derajat", "180 derajat"], ans: "90 derajat", exp: "Diagonal pada bidang persegi saling berpotongan tegak lurus (90 derajat)." },
+  { q: "Berapa jumlah total rusuk pada dua buah kubus yang diletakkan terpisah?", opts: ["12", "18", "20", "24", "30"], ans: "24", exp: "Satu kubus punya 12 rusuk. Dua kubus berarti 12 x 2 = 24 rusuk." },
+  { q: "Jika sebuah balok transparan diisi air setengahnya and dimiringkan, maka permukaan air akan berbentuk...", opts: ["Selalu lingkaran", "Selalu persegi", "Selalu bidang datar", "Mengikuti kemiringan", "Berbentuk bola"], ans: "Selalu bidang datar", exp: "Secara fisik, permukaan air yang tenang akan selalu membentuk bidang datar horizontal karena gaya gravitasi." },
+  { q: "Berapa banyak sisi pada prisma segitiga?", opts: ["3", "4", "5", "6", "7"], ans: "5", exp: "Prisma segitiga memiliki 2 sisi alas/tutup (segitiga) and 3 sisi tegak (persegi panjang)." },
+  { q: "Jika panjang balok 10, lebar 5, and volume 250, berapakah tingginya?", opts: ["2", "5", "10", "15", "25"], ans: "5", exp: "T = Volume / (P x L) = 250 / (10 x 5) = 250 / 50 = 5." },
+  { q: "Manakah yang lebih panjang antara diagonal sisi and diagonal ruang pada kubus yang sama?", opts: ["Diagonal sisi", "Diagonal ruang", "Keduanya sama", "Tergantung ukuran", "Tidak bisa ditentukan"], ans: "Diagonal ruang", exp: "Diagonal sisi = s√2, sedangkan Diagonal ruang = s√3. Akar 3 lebih besar dari akar 2." },
+  { q: "Berapa jumlah titik sudut pada limas segiempat?", opts: ["4", "5", "6", "8", "10"], ans: "5", exp: "Ada 4 titik sudut di alas and 1 titik puncak. Total 5 titik sudut." },
+  { q: "Sebuah balok memiliki P=L=4 and T=10. Bangun ini bisa juga disebut...", opts: ["Kubus", "Prisma segiempat", "Limas", "Silinder", "Piramida"], ans: "Prisma segiempat", exp: "Balok adalah nama lain dari prisma segiempat tegak." },
+  { q: "Jika kubus memiliki panjang rusuk 'a', maka panjang diagonal bidangnya adalah...", opts: ["a√2", "a√3", "2a", "a²", "3a"], ans: "a√2", exp: "Rumus baku diagonal bidang (sisi) kubus adalah rusuk dikali akar 2." },
+  { q: "Berapa banyak rusuk yang bertemu di setiap titik sudut pada balok?", opts: ["2", "3", "4", "5", "6"], ans: "3", exp: "Di setiap pojok/titik sudut balok, terdapat pertemuan antara rusuk panjang, lebar, and tinggi." },
+  { q: "Jika dua kubus yang berusuk 2 cm ditempelkan salah satu sisinya, berapa luas permukaan bangun gabungan tersebut?", opts: ["48 cm²", "40 cm²", "44 cm²", "32 cm²", "24 cm²"], ans: "40 cm²", exp: "LP dua kubus = 2 x (6x2²) = 48. Sisi yang berhimpit ada 2 (satu dari tiap kubus), jadi 48 - (2x4) = 40." },
+  { q: "Bangun ruang bola memiliki berapa banyak sisi?", opts: ["0", "1", "2", "Tak terhingga", "3"], ans: "1", exp: "Bola hanya memiliki satu bidang sisi yang melengkung sempurna." },
+  { q: "Manakah yang merupakan ciri garis sejajar pada balok?", opts: ["Saling berpotongan", "Berada di satu bidang dan tidak pernah bertemu", "Membentuk sudut 90 derajat", "Selalu diagonal", "Panjangnya harus berbeda"], ans: "Berada di satu bidang dan tidak pernah bertemu", exp: "Dua garis sejajar adalah garis yang searah dan memiliki jarak tetap sehingga tidak akan pernah berpotongan." },
+  { q: "Berapa banyak bidang diagonal pada prisma segitiga?", opts: ["0", "1", "2", "3", "4"], ans: "0", exp: "Prisma segitiga tidak memiliki diagonal ruang atau bidang diagonal karena tidak ada titik sudut yang berseberangan secara interior." },
+  { q: "Jika rusuk kubus adalah 10 cm, berapa panjang diagonal ruangnya?", opts: ["10 cm", "10√2 cm", "10√3 cm", "20 cm", "30 cm"], ans: "10√3 cm", exp: "Rumus diagonal ruang adalah s√3, maka hasilnya 10√3." },
+  { q: "Pertemuan tiga atau lebih rusuk pada bangun ruang disebut...", opts: ["Garis", "Bidang", "Titik sudut", "Sisi", "Diagonal"], ans: "Titik sudut", exp: "Titik sudut adalah titik pertemuan ujung-ujung rusuk." },
+  { q: "Manakah yang memiliki volume terbesar jika rusuknya sama-sama 6 cm?", opts: ["Kubus", "Limas segiempat", "Semua sama", "Tergantung berat", "Tidak bisa dihitung"], ans: "Kubus", exp: "Volume kubus s³, sedangkan limas 1/3 x s³ (untuk tinggi yang sama). Kubus jauh lebih besar." },
+  { q: "Jika jaring-jaring kubus memiliki satu sisi yang diarsir, dan saat dilipat sisi itu ada di bawah, maka sisi atasnya adalah...", opts: ["Sisi di sebelahnya", "Sisi yang melompati satu kotak dari arsir", "Sisi di ujung terjauh", "Sisi yang menempel pada arsir", "Tidak ada"], ans: "Sisi yang melompati satu kotak dari arsir", exp: "Dalam jaring-jaring, pasangan sisi yang berlawanan (atas-bawah) dipisahkan oleh tepat satu kotak." },
+  { q: "Evaluasi Akhir: Berapa total diagonal sisi pada 2 buah balok?", opts: ["12", "18", "24", "32", "16"], ans: "24", exp: "Satu balok punya 12 diagonal sisi. Dua balok berarti 12 x 2 = 24." }
+];
+
+    let current = 0;
+    let userAns = new Array(quizData.length).fill(null);
+    let timeLeft = 3600; // 60 Menit
+    let timerInterval;
+
+    // --- SISTEM LOGIN ---
+    function startTest() {
+        const name = document.getElementById('username').value.trim();
+        if(!name) return alert("Silakan masukkan nama Anda!");
+        
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('test-screen').style.display = 'block';
+        
+        render();
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function updateTimer() {
+        if(timeLeft <= 0) { finish(); return; }
+        timeLeft--;
+        let m = Math.floor(timeLeft / 60);
+        let s = timeLeft % 60;
+        document.getElementById('timer').innerText = `${m}:${s < 10 ? '0'+s : s}`;
+    }
+
+    // --- RENDER SOAL ---
+    function render() {
+        const q = quizData[current];
+        document.getElementById('q-num').innerText = `PERTANYAAN ${current + 1} DARI ${quizData.length}`;
+        document.getElementById('q-text').innerText = q.q;
+        
+        let html = "";
+        q.opts.forEach((o, i) => {
+            html += `<div class="opt ${userAns[current] === i ? 'selected' : ''}" onclick="pick(${i})">
+                        <b style="margin-right:10px;">${String.fromCharCode(65+i)}.</b> ${o}
+                     </div>`;
+        });
+        document.getElementById('options-container').innerHTML = html;
+
+        // Navigasi
+        let nav = "";
+        quizData.forEach((_, i) => {
+            nav += `<div class="nav-item ${userAns[i] !== null ? 'filled' : ''} ${current === i ? 'active' : ''}" onclick="current=${i};render()">${i+1}</div>`;
+        });
+        document.getElementById('nav-grid').innerHTML = nav;
+    }
+
+    function pick(i) {
+        userAns[current] = i;
+        render();
+        // Auto next
+        setTimeout(() => { if(current < quizData.length-1) { current++; render(); } }, 250);
+    }
+
+    function changeQ(dir) {
+        if(dir === 1 && current < quizData.length-1) current++;
+        else if(dir === -1 && current > 0) current--;
+        render();
+    }
+
+    function confirmFinish() {
+        if(confirm("Apakah Anda yakin ingin menyelesaikan ujian? Jawaban akan langsung dikirim.")) finish();
+    }
+
+    // --- FINISH & INTEGRASI G-SHEET ---
+    function finish() {
+        clearInterval(timerInterval);
+        let benar = 0;
+        let tableRows = "";
+        
+        quizData.forEach((q, i) => {
+            const isCorrect = userAns[i] !== null && q.opts[userAns[i]] === q.ans;
+            if(isCorrect) benar++;
+            
+            tableRows += `<tr>
+                <td align="center"><b>${i+1}</b></td>
+                <td>
+                    <b>Soal:</b> ${q.q}<br>
+                    <span style="color:${isCorrect?'green':'red'}">Jawaban Anda: ${userAns[i]!==null?q.opts[userAns[i]]:'-'}</span><br>
+                    <b>Kunci:</b> <span style="color:green">${q.ans}</span>
+                    <div class="exp-box"><b>Pembahasan:</b> ${q.exp || 'Analisis mandiri materi terkait.'}</div>
+                </td>
+                <td align="center">${isCorrect ? '<b style="color:green">BENAR</b>' : '<b style="color:red">SALAH</b>'}</td>
+            </tr>`;
+        });
+
+        const score = Math.round((benar / quizData.length) * 100);
+        const name = document.getElementById('username').value;
+
+        // KIRIM KE GOOGLE SHEET (Ganti URL di bawah)
+        fetch("https://script.google.com/macros/s/AKfycbxp_LboBzFPWAwYnpIYbzcvXbafmrDSekTmk7PkaRt871LTHPEAt375cGR65pCsT4vw/exec", {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({
+                nama: name,
+                skor: score,
+                kategori: "Kecerdasan",
+                tanggal: new Date().toLocaleString()
+            })
+        });
+
+        document.getElementById('test-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+        document.getElementById('res-name-display').innerText = name;
+        document.getElementById('score-val').innerText = score;
+        document.getElementById('review-body').innerHTML = tableRows;
+        window.scrollTo(0,0);
+    }
+
+    // --- DOWNLOAD PDF ---
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const nama = document.getElementById('username').value;
+        const score = document.getElementById('score-val').innerText;
+
+        doc.setFontSize(18);
+        doc.text("LAPORAN HASIL CAT KECERDASAN", 105, 15, { align: "center" });
+        doc.setFontSize(11);
+        doc.text("Persona Research & Consulting", 105, 22, { align: "center" });
+        doc.line(15, 25, 195, 25);
+
+        doc.text(`Nama Lengkap : ${nama}`, 15, 35);
+        doc.text(`Skor Akhir    : ${score} / 100`, 15, 42);
+        doc.text(`Tanggal Tes   : ${new Date().toLocaleDateString('id-ID')}`, 15, 49);
+
+        const rows = quizData.map((q, i) => {
+            const isCorrect = userAns[i] !== null && q.opts[userAns[i]] === q.ans;
+            return [
+                i + 1,
+                `Soal: ${q.q}\nJawaban: ${userAns[i]!==null?q.opts[userAns[i]]:'-'}\nKunci: ${q.ans}\nPembahasan: ${q.exp}`,
+                isCorrect ? "BENAR" : "SALAH"
+            ];
+        });
+
+        doc.autoTable({
+            startY: 55,
+            head: [['No', 'Detail Soal & Pembahasan', 'Status']],
+            body: rows,
+            theme: 'grid',
+            headStyles: { fillColor: [26, 26, 46] },
+            styles: { fontSize: 8, cellPadding: 3 },
+            columnStyles: { 1: { cellWidth: 140 } }
+        });
+
+        doc.save(`Hasil_CAT_${nama}.pdf`);
+    }
+</script>
+</body>
+</html>

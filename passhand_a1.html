@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAT KEPRIBADIAN (PASS HAND 1) | Persona Research & Consulting</title>
+    <style>
+        :root { --navy: #000033; --gold: #D4AF37; --bg: #FDFCF0; --white: #ffffff; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 20px; user-select: none; }
+        #main-container { max-width: 850px; margin: auto; background: var(--white); border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 10px solid var(--gold); overflow: hidden; }
+        .header { background: var(--navy); color: white; padding: 25px; text-align: center; border-bottom: 4px solid var(--gold); }
+        .header h2 { margin: 0; letter-spacing: 2px; text-transform: uppercase; }
+        .content { padding: 30px; }
+        .instruction-box { background: #fffcf0; border-left: 5px solid var(--gold); padding: 20px; margin-bottom: 25px; font-size: 14px; color: #5d4037; }
+        input[type="text"] { width: 100%; padding: 15px; margin: 20px 0; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+        .btn-start { width: 100%; padding: 18px; background: var(--gold); border: none; font-weight: bold; border-radius: 8px; cursor: pointer; color: var(--navy); text-transform: uppercase; }
+        #quiz-area, #result-area { display: none; }
+        .q-text { font-size: 1.4em; font-weight: 600; text-align: center; margin: 40px 0; min-height: 100px; color: var(--navy); line-height: 1.5; }
+        .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .btn-opt { padding: 25px; border: 2px solid #eee; border-radius: 12px; cursor: pointer; text-align: center; font-weight: bold; font-size: 1.3em; background: #fff; }
+        .btn-opt:hover { border-color: var(--gold); background: #fffcf0; }
+        #nav-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
+        .dot { font-size: 10px; height: 30px; display: flex; align-items: center; justify-content: center; background: #eee; border-radius: 4px; color: #999; }
+        .dot.done { background: var(--gold); color: white; }
+        .res-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
+        .res-table td { border: 1px solid #ddd; padding: 12px; }
+        .badge { padding: 15px; border-radius: 8px; font-weight: bold; font-size: 1.2em; margin: 20px 0; text-align: center; display: block; }
+        .ms { background: #dcfce7; color: #166534; border: 1px solid #166534; }
+        .tms { background: #fff7ed; color: #9a3412; border: 1px solid #9a3412; }
+        .invalid { background: #fee2e2; color: #991b1b; border: 1px solid #991b1b; }
+        .interpretasi-box { background: #f8fafc; padding: 25px; border-radius: 10px; text-align: left; margin-top: 25px; border: 1px solid #e2e8f0; }
+        .interpretasi-box h4 { margin-top: 0; color: var(--navy); border-bottom: 2px solid var(--gold); display: inline-block; padding-bottom: 5px; margin-bottom: 15px;}
+        .section-title { font-weight: bold; color: var(--navy); margin-top: 15px; display: block; text-decoration: underline; }
+        .narasi-text { line-height: 1.8; font-size: 15px; color: #334155; }
+    </style>
+</head>
+<body oncontextmenu="return false">
+
+<div id="main-container">
+    <div class="header">
+        <h2>Persona Research</h2>
+        <div style="color: var(--gold); font-size: 13px; font-weight: bold; letter-spacing: 1px;">HASIL ANALISIS KEPRIBADIAN (A1)</div>
+    </div>
+
+    <div class="content">
+        <div id="login-area">
+            <div class="instruction-box">
+                <b>Petunjuk:</b> Tes ini akan memotret gaya kerja dan karakter asli Anda. Jawablah "YA" atau "TIDAK" dengan cepat tanpa terlalu banyak berpikir. Kejujuran Anda sangat menentukan keakuratan hasil.
+            </div>
+            <input type="text" id="input-nama" placeholder="Ketik Nama Lengkap Anda..." autocomplete="off">
+            <button class="btn-start" onclick="mulaiKuis()">MULAI TES</button>
+        </div>
+
+        <div id="quiz-area">
+            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:10px;">
+                <span id="no-skr">Soal 1 / 100</span>
+                <span style="color:var(--gold)">VALIDASI PRC</span>
+            </div>
+            <div class="q-text" id="display-soal">Memuat...</div>
+            <div class="opt-grid">
+                <div class="btn-opt" onclick="simpan('YA')">YA</div>
+                <div class="btn-opt" onclick="simpan('TIDAK')">TIDAK</div>
+            </div>
+            <div id="nav-grid"></div>
+        </div>
+
+        <div id="result-area" style="text-align: center;">
+            <h3 style="color: var(--navy);">HASIL PSIKOGRAM ANDA</h3>
+            <p id="status-cloud" style="color: #3b82f6; font-size: 12px;">Data sedang diproses...</p>
+            
+            <div id="badge-final"></div>
+
+            <div class="interpretasi-box">
+                <h4>HASIL ANALISIS LENGKAP:</h4>
+                <div id="narrative-text" class="narasi-text"></div>
+            </div>
+            
+            <button class="btn-start" style="margin-top:20px" onclick="location.reload()">KEMBALI KE AWAL</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbztjdF9GAulyB4AIBZzMnECkrbqp4neEnC0ldMR6RXKqgoGrE0iD0NH1hnk8tO1X0c/exec";
+
+    const AssessmentEngine = {
+        analyze(jawaban) {
+            let s = { E: 0, N: 0, P: 0, L: 0 };
+            const w = {
+                E_YA: [2, 12, 16, 26, 32, 42, 46, 51, 56, 71, 77, 80, 84, 87, 96],
+                E_TIDAK: [7, 22, 38, 63],
+                N_YA: [3, 6, 11, 14, 18, 20, 24, 28, 30, 33, 37, 41, 44, 47, 50, 55, 58, 62, 66, 72, 76, 81, 83, 86, 90, 94, 98],
+                P_YA: [5, 15, 19, 23, 25, 29, 39, 48, 54, 60, 67, 74, 92],
+                P_TIDAK: [9, 35, 53, 65, 68, 73, 75, 82, 85, 89, 91, 93, 95],
+                L_YA: [8, 21, 27, 40, 49, 57, 78],
+                L_TIDAK: [4, 10, 13, 17, 31, 34, 45, 52, 64, 69, 79, 88, 97, 99]
+            };
+
+            w.E_YA.forEach(n => { if(jawaban[n-1] === 'YA') s.E++ });
+            w.E_TIDAK.forEach(n => { if(jawaban[n-1] === 'TIDAK') s.E++ });
+            w.N_YA.forEach(n => { if(jawaban[n-1] === 'YA') s.N++ });
+            w.P_YA.forEach(n => { if(jawaban[n-1] === 'YA') s.P++ });
+            w.P_TIDAK.forEach(n => { if(jawaban[n-1] === 'TIDAK') s.P++ });
+            w.L_YA.forEach(n => { if(jawaban[n-1] === 'YA') s.L++ });
+            w.L_TIDAK.forEach(n => { if(jawaban[n-1] === 'TIDAK') s.L++ });
+
+            let status = "Memenuhi Standar";
+            let narasi = "";
+
+            // --- BAGIAN INTERPRETASI BAHASA AWAM ---
+            
+            // 1. SOSIALISASI (E)
+            let nSosial = "";
+            if(s.E > 15) {
+                nSosial = "Anda adalah tipe <b>'Social Butterfly'</b>. Anda sangat bersemangat saat bertemu orang baru, gampang akrab, dan cocok bekerja di posisi yang butuh komunikasi banyak. Namun, hati-hati jangan sampai terlalu banyak bicara hingga lupa tugas utama.";
+            } else if (s.E >= 10) {
+                nSosial = "Anda punya <b>keseimbangan sosial yang baik</b>. Anda bisa bergaul saat dibutuhkan, tapi juga tidak masalah jika harus fokus bekerja sendirian. Anda fleksibel dalam tim.";
+            } else {
+                nSosial = "Anda adalah tipe <b>pemikir yang tenang (Introvert)</b>. Anda lebih suka bekerja di balik layar, mandiri, dan bicara seperlunya. Anda sangat fokus jika diberi ruang kerja yang tidak terlalu ramai.";
+            }
+
+            // 2. EMOSI (N)
+            let nEmosi = "";
+            if(s.N > 18) {
+                nEmosi = "Anda cenderung <b>perasa dan sensitif</b>. Masalah kecil bisa membuat Anda kepikiran cukup lama. Di dunia kerja, Anda butuh lingkungan yang suportif agar rasa cemas Anda tidak mengganggu konsentrasi.";
+            } else if (s.N >= 11) {
+                nEmosi = "Emosi Anda <b>cukup stabil</b>, meski kadang rasa khawatir muncul saat tekanan datang bertubi-tubi. Anda masih bisa mengendalikan diri dengan baik di situasi sulit.";
+            } else {
+                nEmosi = "Anda punya <b>mental yang sangat tangguh</b>. Jarang ada hal yang bisa membuat Anda panik. Anda sangat dingin dan tenang saat menghadapi krisis atau masalah besar.";
+            }
+
+            // 3. GAYA KERJA & ATURAN (P)
+            let nAturan = "";
+            if(s.P > 14) {
+                nAturan = "Anda punya <b>karakter yang kuat dan independen</b>. Kadang Anda merasa aturan itu membatasi kreativitas Anda. Anda lebih suka hasil cepat dan praktis, meskipun kadang terlihat kurang sabaran di mata orang lain.";
+            } else {
+                nAturan = "Anda adalah <b>pribadi yang taat dan peduli</b>. Anda menghargai prosedur, sopan santun, dan perasaan rekan kerja. Anda tipe yang sangat bisa diandalkan dalam mengikuti aturan perusahaan.";
+            }
+
+            // 4. VALIDITAS (L)
+            if (s.L > 12) {
+                status = "Tidak Valid";
+                narasi = "<p style='color:#b91c1c;'><b>Peringatan:</b> Hasil tes menunjukkan bahwa Anda berusaha memberikan jawaban yang <b>'terlalu sempurna'</b> atau menutupi kekurangan diri. Hal ini membuat profil asli Anda tidak terbaca secara akurat. Kami menyarankan untuk melakukan tes ulang dengan lebih jujur apa adanya.</p>";
+            } else {
+                if (s.N > 18) status = "Belum Memenuhi Standar";
+                narasi = `
+                    <span class="section-title">Gaya Bergaul:</span> ${nSosial}<br>
+                    <span class="section-title">Ketangguhan Mental:</span> ${nEmosi}<br>
+                    <span class="section-title">Sikap Terhadap Aturan:</span> ${nAturan}<br>
+                    <p style="margin-top:20px; font-weight:bold; color:#1e40af;">👉 Secara keseluruhan, profil kepribadian Anda dinyatakan: <u>${status}</u>.</p>
+                `;
+            }
+
+            return { s, status, narasi };
+        }
+    };
+
+    // Bank Soal PRC (Sama seperti sebelumnya)
+    const bankSoal = [
+        {id:1, q:"Apa Anda sering merasa buru-buru ingin cepat menyelesaikan sesuatu?"},
+        {id:2, q:"Apa Anda orang yang suka banyak bicara?"},
+        {id:3, q:"Apa Anda sering khawatir soal hal yang belum tentu terjadi?"},
+        {id:4, q:"Apa Anda pernah ambil barang orang lain (biarpun cuma peniti)?"},
+        {id:5, q:"Apa Anda senang kalau lihat orang yang Anda benci gagal?"},
+        {id:6, q:"Apa Anda gampang tersinggung kalau dikritik teman?"},
+        {id:7, q:"Apa Anda lebih suka kerja sendirian daripada bareng-bareng?"},
+        {id:8, q:"Apa Anda selalu tepati janji, apapun rintangannya?"},
+        {id:9, q:"Apa Anda cepat bosan kalau kerjaannya itu-itu saja?"},
+        {id:10, q:"Apa Anda pernah merasa kesal sekali dengan orang tua?"},
+        {id:11, q:"Apa Anda grogi kalau diajak ngobrol sama atasan?"},
+        {id:12, q:"Apa Anda suka melakukan hal yang agak menantang bahaya?"},
+        {id:13, q:"Apa Anda pernah pura-pura sakit supaya tidak perlu bekerja?"},
+        {id:14, q:"Apa Anda sering susah tidur karena mikirin masalah?"},
+        {id:15, q:"Apa Anda tipe orang yang ingin balas dendam kalau disakiti?"},
+        {id:16, q:"Apa Anda gampang akrab di tempat baru?"},
+        {id:17, q:"Apa Anda pernah berbohong supaya tidak dimarahi?"},
+        {id:18, q:"Apa Anda sering merasa capek padahal tidak melakukan kegiatan berat?"},
+        {id:19, q:"Apa menurut Anda aturan itu boleh dilanggar kalau keadaan darurat?"},
+        {id:20, q:"Apa Anda sering merasa kesepian padahal sedang di keramaian?"},
+        {id:21, q:"Apa Anda selalu cuci tangan sebelum makan, tanpa terlewat?"},
+        {id:22, q:"Apa Anda lebih suka bikin rencana matang dulu sebelum bertindak?"},
+        {id:23, q:"Apa Anda susah memaafkan orang yang sudah mengkhianati Anda?"},
+        {id:24, q:"Apa Anda gemetar kalau jadi pusat perhatian orang banyak?"},
+        {id:25, q:"Apa Anda pernah marah sampai ingin membanting barang?"},
+        {id:26, q:"Apa Anda suka ikut kegiatan organisasi atau komunitas?"},
+        {id:27, q:"Apa Anda selalu jujur dalam setiap omongan Anda?"},
+        {id:28, q:"Apa Anda merasa nasib Anda tidak seberuntung orang lain?"},
+        {id:29, q:"Apa Anda menikmati kalau lagi berdebat dengan orang?"},
+        {id:30, q:"Apa Anda cemas kalau kerjaan belum selesai dengan sempurna?"},
+        {id:31, q:"Apa Anda pernah membicarakan kejelekan teman di belakangnya?"},
+        {id:32, q:"Apa Anda merasa nyaman kalau disuruh memimpin kelompok?"},
+        {id:33, q:"Apa Anda sering merasa sedih tanpa tahu sebabnya?"},
+        {id:34, q:"Apa Anda pernah terobos lampu merah saat jalanan lagi sepi?"},
+        {id:35, q:"Apa Anda senang bantu orang lain meskipun Anda sedang sibuk?"},
+        {id:36, q:"Apa Anda orangnya selalu terburu-buru dalam bertindak?"},
+        {id:37, q:"Apa Anda susah menahan emosi kalau ada yang memberi kritik?"},
+        {id:38, q:"Apa Anda lebih pilih baca buku daripada pergi ke pesta?"},
+        {id:39, q:"Apa Anda pernah merasa ingin pergi jauh dari rumah?"},
+        {id:40, q:"Apa Anda selalu buang sampah pada tempatnya tanpa kecuali?"},
+        {id:41, q:"Apa Anda sering merasa kurang percaya diri?"},
+        {id:42, q:"Apa Anda suka coba-coba hal baru yang belum pernah dikenal?"},
+        {id:43, q:"Apa Anda mau-mau saja diperintah sama orang yang lebih muda?"},
+        {id:44, q:"Apa Anda merasa orang lain tidak ada yang mengerti perasaan Anda?"},
+        {id:45, q:"Apa Anda pernah datang telat saat ada pertemuan penting?"},
+        {id:46, q:"Apa Anda termasuk orang yang ceria hampir setiap hari?"},
+        {id:47, q:"Apa Anda gampang pusing kalau kerjaannya banyak sekali?"},
+        {id:48, q:"Apa menurut Anda kekerasan itu kadang perlu buat mendidik orang?"},
+        {id:49, q:"Apa Anda selalu berdoa setiap kali memulai aktivitas?"},
+        {id:50, q:"Apa Anda sering merasa sulit untuk berkonsentrasi?"},
+        {id:51, q:"Apa Anda suka membuat orang lain tertawa dengan candaan Anda?"},
+        {id:52, q:"Apa Anda pernah merasa iri saat melihat teman sukses?"},
+        {id:53, q:"Apa Anda yakin bisa kontrol diri kalau sedang emosi?"},
+        {id:54, q:"Apa Anda ingin tahu sekali dengan urusan pribadi orang lain?"},
+        {id:55, q:"Apa Anda pernah kepikiran ingin menyerah saja sama hidup?"},
+        {id:56, q:"Apa Anda mau berteman sama siapa saja tanpa pilih-pilih status?"},
+        {id:57, q:"Apa Anda selalu merapikan kasur sehabis bangun tidur?"},
+        {id:58, q:"Apa jantung Anda berdebar kencang saat menunggu giliran?"},
+        {id:59, q:"Apa Anda suka pekerjaan yang butuh ketelitian tinggi?"},
+        {id:60, q:"Apa Anda pernah manfaatin kelemahan orang buat untung sendiri?"},
+        {id:61, q:"Apa Anda gampang percaya dengan janji orang lain?"},
+        {id:62, q:"Apa Anda sering merasa tidak puas dengan hasil kerja sendiri?"},
+        {id:63, q:"Apa Anda lebih pilih diam saja saat sedang ada perdebatan?"},
+        {id:64, q:"Apa Anda pernah pinjam uang dan lupa mengembalikannya?"},
+        {id:65, q:"Apa Anda berani membela yang benar meskipun itu berisiko?"},
+        {id:66, q:"Apa Anda merasa takut kalau harus di rumah sendirian?"},
+        {id:67, q:"Apa Anda suka menonton tayangan keras (seperti tinju/berantem)?"},
+        {id:68, q:"Apa Anda selalu menghargai pendapat orang biarpun berbeda?"},
+        {id:69, q:"Apa Anda pernah berkata kasar pada orang yang lebih tua?"},
+        {id:70, q:"Apa Anda sering merasa bangga dengan diri sendiri?"},
+        {id:71, q:"Apa Anda gampang bosan kalau disuruh duduk diam lama-lama?"},
+        {id:72, q:"Apa Anda sering curiga dengan niat baik orang lain?"},
+        {id:73, q:"Apa Anda kuat kalau disuruh kerja sambil diawasi ketat?"},
+        {id:74, q:"Apa Anda pernah ingin memukul orang yang sangat menyebalkan?"},
+        {id:75, q:"Apa Anda orang yang sangat rapi menyusun barang atau dokumen?"},
+        {id:76, q:"Apa Anda sering merasa takut soal masa depan?"},
+        {id:77, q:"Apa Anda berani ambil risiko demi dapat hasil besar?"},
+        {id:78, q:"Apa Anda selalu mengikuti instruksi atasan tanpa membantah?"},
+        {id:79, q:"Apa Anda pernah membuang pesan tanpa dibaca terlebih dahulu?"},
+        {id:80, q:"Apa Anda gampang memulai obrolan dengan orang tidak dikenal?"},
+        {id:81, q:"Apa suasana hati (mood) Anda gampang berubah secara tiba-tiba?"},
+        {id:82, q:"Apa menurut Anda kejujuran itu nomor satu dalam bekerja?"},
+        {id:83, q:"Apa Anda pernah merasa tidak dipedulikan oleh lingkungan sekitar?"},
+        {id:84, q:"Apa Anda suka melakukan sesuatu secara mendadak atau spontan?"},
+        {id:85, q:"Apa Anda selalu sopan kepada siapa saja?"},
+        {id:86, q:"Apa Anda sering menyesal sesudah melakukan sesuatu?"},
+        {id:87, q:"Apa Anda merasa lebih bersemangat kerja di malam hari?"},
+        {id:88, q:"Apa Anda pernah menertawakan orang yang sedang kesusahan?"},
+        {id:89, q:"Apa Anda siap kalau dipindah tugas ke mana saja?"},
+        {id:90, q:"Apa Anda gemetar kalau mau menghadapi ujian?"},
+        {id:91, q:"Apa Anda suka bantu beresin rumah tanpa harus disuruh?"},
+        {id:92, q:"Apa Anda pernah ingin punya kekuatan untuk balas dendam?"},
+        {id:93, q:"Apa Anda orangnya sabar saat sedang antre panjang?"},
+        {id:94, q:"Apa Anda sering bingung menentukan pilihan hidup?"},
+        {id:95, q:"Apa Anda selalu membayar hutang tepat pada waktunya?"},
+        {id:96, q:"Apa Anda suka berpetualang ke tempat yang baru atau asing?"},
+        {id:97, q:"Apa Anda merasa sulit untuk mengakui kalau Anda salah?"},
+        {id:98, q:"Apa Anda sering merasa hidup ini tidak adil bagi Anda?"},
+        {id:99, q:"Apa Anda selalu jaga rahasia yang dipercayakan kepada Anda?"},
+        {id:100, q:"Apa Anda yakin sekali kalau Anda bakal lulus tes ini?"}
+    ];
+
+    let currentIdx = 0, jawabanUser = [], userName = "";
+
+    function mulaiKuis() {
+        userName = document.getElementById('input-nama').value.trim();
+        if (!userName) return alert("Silakan isi nama Anda dulu ya.");
+        document.getElementById('login-area').style.display = 'none';
+        document.getElementById('quiz-area').style.display = 'block';
+        const grid = document.getElementById('nav-grid');
+        for (let i = 1; i <= 100; i++) {
+            let d = document.createElement('div'); d.className = 'dot'; d.innerText = i; grid.appendChild(d);
+        }
+        tampilkanSoal();
+    }
+
+    function tampilkanSoal() {
+        document.getElementById('display-soal').innerText = bankSoal[currentIdx].q;
+        document.getElementById('no-skr').innerText = `Soal ${currentIdx + 1} / 100`;
+        const dots = document.querySelectorAll('.dot');
+        dots.forEach((d, i) => { d.classList.remove('active'); if (i === currentIdx) d.classList.add('active'); });
+    }
+
+    function simpan(p) {
+        jawabanUser[currentIdx] = p;
+        document.querySelectorAll('.dot')[currentIdx].classList.add('done');
+        if (++currentIdx < 100) tampilkanSoal(); else selesaikan();
+    }
+
+    function selesaikan() {
+        document.getElementById('quiz-area').style.display = 'none';
+        document.getElementById('result-area').style.display = 'block';
+        
+        const res = AssessmentEngine.analyze(jawabanUser);
+        
+        const b = document.getElementById('badge-final');
+        b.innerText = res.status;
+        b.className = `badge ${res.status === 'Memenuhi Standar' ? 'ms' : (res.status === 'Tidak Valid' ? 'invalid' : 'tms')}`;
+        
+        document.getElementById('narrative-text').innerHTML = res.narasi;
+
+        fetch(SCRIPT_URL, {
+            method: "POST", mode: "no-cors",
+            body: JSON.stringify({ nama: userName, E: res.s.E, N: res.s.N, P: res.s.P, L: res.s.L, status: res.status, jawaban: jawabanUser.join(",") })
+        }).then(() => { document.getElementById('status-cloud').innerHTML = "✅ Hasil analisis sudah aman tersimpan."; });
+    }
+</script>
+</body>
+</html>
